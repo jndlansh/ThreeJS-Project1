@@ -4,7 +4,7 @@ import {useSnapshot} from 'valtio'
 
 //import config from '../config/config/config.js'
 import state from '../store'
-import {download} from '../assets'
+import {download, logoShirt, stylishShirt} from '../assets'
 import {downloadCanvasToImage, reader} from '../config/helpers'
 import {fadeAnimation, slideAnimation} from '../config/motion'
 import {AIPicker, Tab, ColorPicker, FilePicker, CustomButton} from '../components'
@@ -13,6 +13,43 @@ import {EditorTabs, FilterTabs, DecalTypes} from "../config/constants"
 const Customizer = () => {
   const snap = useSnapshot(state);
 
+  const [file, setFile] = useState('');
+
+  const [prompt, setPrompt] = useState('');
+  const [generatingImg, setGeneratingImg] = useState(false)
+
+  const [activeEditorTab, setActiveEditorTab] = useState("");
+  const [activeFilterTab, setActiveFilterTab] = useState({
+    logoShirt: true,
+    stylishShirt: false,
+  })
+
+  //show tab content depending on the activeTab
+  const generateTabContent = () => {
+    switch(activeEditorTab){
+      case "colorpicker":
+        return <ColorPicker/>
+      case "aipicker":
+        return <AIPicker
+          // prompt={prompt}
+          // setPrompt={setPrompt}
+          // generatingImg={generatingImg}
+          // handleSubmit={handleSubmit}
+        />
+      case "filepicker":
+        return <FilePicker
+          // file={file}
+          // setFile={setFile}
+          // readFile={readFile}
+        />
+      default:
+        return null
+    }
+  }
+
+  // const handleSubmit = async (type) => {
+  //   if(!prompt) return alert("Please")
+  // }
   return (
     <AnimatePresence>
       {!snap.intro && (
@@ -28,9 +65,10 @@ const Customizer = () => {
                   <Tab
                     key={tab.name}
                     tab={tab}
-                    handleClick={() => {}} 
+                    handleClick={() => setActiveEditorTab(tab.name)} 
                   />
                 ))}
+                {generateTabContent()}
               </div>
             </div>
           </motion.div>
